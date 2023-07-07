@@ -4,14 +4,16 @@
 ########################################################################
 #
 import cv2 as cv
+import numpy as np
 
 # 
 ########################################################################
 # Definições Gerais
 ########################################################################
 #
+BaseDir = "OpenCV/"
 NomeVideo = "Escritorio.mp4"
-CaminhoBase = "/home/asoares/OpenCV/"
+CaminhoBase = "/home/asoares/" + BaseDir
 CaminhoVideo= CaminhoBase + "Videos/" 
 
 # 
@@ -42,22 +44,24 @@ while(Video.isOpened()):
 # Separando a Imagem nos Canais 
 ########################################################################
 #
+        VideoFrame = cv.resize(VideoFrame, (0, 0),fx=EscalaPercentual, fy=EscalaPercentual)
         Azul, Verde, Vermelho = cv.split(VideoFrame)
-        imgAzul  = cv.resize(Azul, (0, 0),fx=EscalaPercentual, fy=EscalaPercentual)
-        imgVerde = cv.resize(Verde, (0, 0),fx=EscalaPercentual, fy=EscalaPercentual)
-        imgVermelho = cv.resize(Vermelho, (0, 0),fx=EscalaPercentual, fy=EscalaPercentual)
-        imgVideoFrame = cv.resize(VideoFrame, (0, 0),fx=EscalaPercentual, fy=EscalaPercentual)
+
+        zeros = np.zeros(VideoFrame.shape[:2], dtype="uint8")
+        Vermelho = cv.merge([zeros, zeros, Vermelho])
+        Verde = cv.merge([zeros, Verde, zeros])
+        Azul = cv.merge([Azul, zeros, zeros])
 
 # 
 ########################################################################
 # Apresentando a Imagem
 ########################################################################
-#
-        cv.imshow ( "Canal Azul", imgAzul)
-        cv.imshow ( "Canal Verde", imgVerde)
-        cv.imshow ( "Canal Vermelho", imgVermelho)
-        cv.imshow ( "Video Original", imgVideoFrame)
+#     
+        imgLinha1 = np.hstack(( VideoFrame, Azul ))  
+        imgLinha2 = np.hstack(( Verde, Vermelho ))  
+        imgTodasImagens = np.vstack(( imgLinha1, imgLinha2 ))  
 
+        cv.imshow ( "Canais da Imagem", imgTodasImagens)
         if cv.waitKey(25) & 0xFF == ord('q'):
             break
         
