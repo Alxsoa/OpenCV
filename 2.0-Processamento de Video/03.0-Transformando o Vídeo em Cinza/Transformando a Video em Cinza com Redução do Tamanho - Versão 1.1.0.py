@@ -4,15 +4,17 @@
 ########################################################################
 #
 import cv2 as cv
+import numpy as np
 
 # 
 ########################################################################
 # Definições Gerais
 ########################################################################
 #
+BaseDir = "OpenCV/"
 NomeJanela = "Vídeo Transformado em Tons de Cinza"
 NomeVideo  = "Escritorio.mp4"
-CaminhoBase = "/home/asoares/OpenCV/"
+CaminhoBase = "/home/asoares/" + BaseDir
 CaminhoVideo = CaminhoBase + "Videos/"  
 
 # 
@@ -42,15 +44,18 @@ AlturaFrame  = Video.get(cv.CAP_PROP_FRAME_HEIGHT)
 # Apresentando a Imagem
 ########################################################################
 #
-EscalaPercentual = 0.5 
+EscalaPercentual = 0.3 
 while(Video.isOpened()):
   Status, VideoFrame = Video.read()
   if Status == True:
 
     ImagemCinza = cv.cvtColor(VideoFrame, cv.COLOR_BGR2GRAY)
     ImagemCinza = cv.resize(ImagemCinza, (0, 0),fx=EscalaPercentual, fy=EscalaPercentual)
-    cv.imshow ( "JanelaBase", ImagemCinza)
-    cv.setWindowTitle("JanelaBase", NomeJanela )
+    VideoFrame  = cv.resize(VideoFrame, (0, 0),fx=EscalaPercentual, fy=EscalaPercentual)
+    ImagemCinza = cv.cvtColor(ImagemCinza,cv.COLOR_GRAY2RGB)   
+
+    imgTodasImagens = np.hstack(( VideoFrame, ImagemCinza )) 
+    cv.imshow ( "Transformacao do Video", imgTodasImagens)
     if cv.waitKey(25) & 0xFF == ord('q'):
       break
  

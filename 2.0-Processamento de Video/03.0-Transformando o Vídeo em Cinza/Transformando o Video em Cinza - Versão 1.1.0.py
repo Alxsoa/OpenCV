@@ -10,9 +10,10 @@ import cv2 as cv
 # Definições Gerais
 ########################################################################
 #
+BaseDir = "OpenCV/"
 NomeJanela = "Vídeo Transformado em Tons de Cinza"
 NomeVideo  = "Escritorio.mp4"
-CaminhoBase = "/home/asoares/OpenCV/"
+CaminhoBase = "/home/asoares/" + BaseDir
 CaminhoVideo = CaminhoBase + "Videos/"  
 
 # 
