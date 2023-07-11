@@ -44,7 +44,6 @@ def RecuperaCorPixel (event,x,y,flags,param):
         cv.putText(imgMoldura, "YCrCb {}".format(ycb[0][0]), (20, 210), cv.FONT_HERSHEY_COMPLEX, .9, (255,255,255), 1, cv.LINE_AA)
         cv.putText(imgMoldura, "LAB {}".format(lab[0][0]), (20, 280), cv.FONT_HERSHEY_COMPLEX, .9, (255,255,255), 1, cv.LINE_AA)
         
-        # Combine the two results to show side by side in a single image
         imgResultado = np.hstack([imgCubo,imgMoldura])        
         cv.imshow("Resultado da Captura da Cor",imgResultado)
         return ()
@@ -54,7 +53,7 @@ def RecuperaCorPixel (event,x,y,flags,param):
 # Definições Gerais
 ########################################################################
 #
-BaseDir = "OpenCV/"
+BaseDir = "LocalCV/"
 NomeJanela  = "Imagem Base"
 NomeImagem  = "CuboMagico.png"
 CaminhoBase = "/home/asoares/" + BaseDir
