@@ -5,16 +5,18 @@
 #
 import cv2 as cv
 import matplotlib.pyplot as plt
+import os
 
 # 
 ########################################################################
 # Definições Gerais
 ########################################################################
 #
+BaseDir = "OpenCV/"
 NomeJanela  = "Imagem Base"
 ImagemMascara = "PikachuMascara.png"
 ImagemRiscada = "PikachuRiscado.jpg"
-CaminhoBase = "/home/asoares/OpenCV/"
+CaminhoBase = "/home/asoares/" + BaseDir
 CaminhoImagem = CaminhoBase + "Imagens/" 
 
 # 
@@ -24,6 +26,21 @@ CaminhoImagem = CaminhoBase + "Imagens/"
 #
 imgMascara = cv.imread ( CaminhoImagem + ImagemMascara, cv.IMREAD_GRAYSCALE)
 imgRiscada = cv.imread ( CaminhoImagem + ImagemRiscada, cv.IMREAD_COLOR)
+
+# 
+########################################################################
+# Checando se a Imagem Foi Lida com Sucesso
+########################################################################
+#
+if imgMascara is None:
+    os.system ("clear")
+    print( "Não Foi Localizada a Imagem : ", ImagemMascara)
+    exit ()
+
+if imgRiscada is None:
+    os.system ("clear")
+    print( "Não Foi Localizada a Imagem : ", ImagemRiscada)
+    exit ()
 
 # 
 ########################################################################
@@ -47,8 +64,6 @@ imgRestaurada = cv.cvtColor(imgRestaurada, cv.COLOR_BGR2RGB)
 ########################################################################
 #
 Grafico = plt.figure(figsize=(10,8))
-plt.title( "Transição das Imagens", fontsize=20, weight='bold' )
-plt.axis ( "off" )
 
 Grafico.add_subplot(1,3,1)
 plt.imshow(imgRiscada )
