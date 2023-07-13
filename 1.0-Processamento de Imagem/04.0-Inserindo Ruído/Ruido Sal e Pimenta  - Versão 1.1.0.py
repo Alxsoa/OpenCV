@@ -6,15 +6,17 @@
 import cv2 as cv
 import numpy as np
 import matplotlib.pyplot as plt
+import os
 
 # 
 ########################################################################
 # Definições Gerais
 ########################################################################
 #
+BaseDir = "OpenCV/"
 ImagemRuido = 'CaravelaRuidoSalPimenta.jpg'
 NomeImagem  = "Caravela.jpg"
-CaminhoBase = "/home/asoares/OpenCV/"
+CaminhoBase = "/home/asoares/" + BaseDir
 CaminhoImagem = CaminhoBase + "Imagens/" + NomeImagem
 CaminhoImagemRuido = CaminhoBase + "Imagens/" + ImagemRuido
 EscalaPercentual = 0.80
@@ -25,6 +27,22 @@ EscalaPercentual = 0.80
 ########################################################################
 #
 Imagem = cv.imread ( CaminhoImagem, cv.IMREAD_COLOR)
+
+# 
+########################################################################
+# Checando se a Imagem Foi Lida com Sucesso
+########################################################################
+#
+if Imagem is None:
+    os.system ("clear")
+    print( "Não Foi Localizada a Imagem : ", NomeImagem )
+    exit ()
+
+# 
+########################################################################
+# Reduzindo a Imagem
+########################################################################
+#
 imgCaravela = cv.resize(Imagem, (0, 0),fx=EscalaPercentual, fy=EscalaPercentual, interpolation = cv.INTER_AREA)
 
 # 
@@ -101,23 +119,26 @@ ImagemResultado = cv.cvtColor ( ImagemResultado, cv.COLOR_BGR2RGB )
 ########################################################################
 #
 Grafico = plt.figure(figsize=(10,8))
-plt.title( "Transição das Imagens", fontsize=20, weight='bold' )
-plt.axis ( "off" )
 
 Grafico.add_subplot(1,3,1)
 plt.imshow(imgCaravela )
-plt.axis("off")
 plt.title("Original")
 
 Grafico.add_subplot(1,3,2)
 plt.imshow(RuidoSalPimenta )
-plt.axis("off")
 plt.title("Ruído \n Sal e Pimenta")
 
 Grafico.add_subplot(1,3,3)
 plt.imshow(ImagemResultado )
-plt.axis("off")
 plt.title("Imagens \n Combinadas")
+
+plt.subplots_adjust ( left   = 0.1,
+                      bottom = 0.1,
+                      right  = 0.9,
+                      top    = 0.9,
+                      wspace = 0.1,
+                      hspace = 0.1 )
+
 plt.show ()
 
 ########################################################################

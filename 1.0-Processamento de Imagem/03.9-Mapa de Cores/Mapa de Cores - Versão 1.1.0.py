@@ -9,6 +9,7 @@
 import cv2 as cv
 import numpy as np
 import matplotlib.pyplot as plt
+import os
 
 # 
 ########################################################################
@@ -59,9 +60,30 @@ CaminhoImagem = CaminhoBase + "Imagens/"
 ########################################################################
 #
 imgBase = cv.imread ( CaminhoImagem + NomeImagem, cv.IMREAD_COLOR)
+
+# 
+########################################################################
+# Checando se a Imagem Foi Lida com Sucesso
+########################################################################
+#
+if imgBase is None:
+    os.system ("clear")
+    print( "Não Foi Localizada a Imagem : ", NomeImagem)
+    exit ()
+
+# 
+########################################################################
+# Reduz o Tamanho da Imagem e Cria a Matriz
+########################################################################
+#
 imgReduzida = cv.resize(imgBase, (250, 350), interpolation = cv.INTER_AREA)
 imgTemporaria = np.zeros((250, 350, 3), np.uint8);
 
+# 
+########################################################################
+# Processa e Apresenta o Resultado
+########################################################################
+#
 iLinha = 1
 Grafico = plt.figure(figsize=(12, 15))
 for iAux in range (0,21):

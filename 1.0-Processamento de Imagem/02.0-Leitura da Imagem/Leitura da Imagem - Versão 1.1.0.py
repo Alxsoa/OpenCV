@@ -4,6 +4,7 @@
 ########################################################################
 #
 import cv2 as cv
+import os
 
 # 
 ########################################################################
@@ -11,7 +12,8 @@ import cv2 as cv
 ########################################################################
 #
 BaseDir = "OpenCV/"
-NomeImagem  = "QRCode.png"
+NomeJanela = "Imagem Base"
+NomeImagem  = "Girassol.png"
 CaminhoBase = "/home/asoares/" + BaseDir
 CaminhoImagem = CaminhoBase + "Imagens/" 
 
@@ -20,32 +22,27 @@ CaminhoImagem = CaminhoBase + "Imagens/"
 # Lendo a Imagem
 ########################################################################
 #
-imgQRCode = cv.imread ( CaminhoImagem + NomeImagem, cv.IMREAD_COLOR)
+Imagem = cv.imread ( CaminhoImagem + NomeImagem, cv.IMREAD_COLOR)
 
 # 
 ########################################################################
-# Inicializando o Detector
+# Checando se a Imagem Foi Lida com Sucesso
 ########################################################################
 #
-qrCodeDetector = cv.QRCodeDetector()
-qrDados, qrBox, _  = qrCodeDetector.detectAndDecode(imgQRCode)
+if Imagem is None:
+    os.system ("clear")
+    print( "Não Foi Localizada a Imagem : ", NomeImagem)
+    exit ()
 
-# 
-########################################################################
-# Detectando e Decodificando o QRCode
-########################################################################
-#
-if qrBox is not None:
-    print ( "Dados Decodificados : ", qrDados )
-else:
-    print ( "Não foi detectado Nenhuma Informação \n")
 
 # 
 ########################################################################
 # Apresentando a Imagem
 ########################################################################
 #
-cv.imshow ( "JanelaBase", imgQRCode)
+cv.imshow ( "JanelaBase", Imagem)
+cv.setWindowTitle("JanelaBase", NomeJanela )
+
 cv.waitKey(0)
 cv.destroyAllWindows()
 

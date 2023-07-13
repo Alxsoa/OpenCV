@@ -6,15 +6,17 @@
 import cv2 as cv
 import numpy as np
 import matplotlib.pyplot as plt
+import os
 
 # 
 ########################################################################
 # Definições Gerais
 ########################################################################
 #
-ImagemRuido = 'CaravelaRuidoGausiano.jpg'
+BaseDir = "OpenCV/"
+ImagemRuido = 'CaravelaRuidoUniforme.jpg'
 NomeImagem  = "Caravela.jpg"
-CaminhoBase = "/home/asoares/OpenCV/"
+CaminhoBase = "/home/asoares/" + BaseDir
 CaminhoImagem = CaminhoBase + "Imagens/" + NomeImagem
 CaminhoImagemRuido = CaminhoBase + "Imagens/" + ImagemRuido
 EscalaPercentual = 0.80
@@ -25,6 +27,22 @@ EscalaPercentual = 0.80
 ########################################################################
 #
 Imagem = cv.imread ( CaminhoImagem, cv.IMREAD_COLOR)
+
+# 
+########################################################################
+# Checando se a Imagem Foi Lida com Sucesso
+########################################################################
+#
+if Imagem is None:
+    os.system ("clear")
+    print( "Não Foi Localizada a Imagem : ", NomeImagem)
+    exit ()
+
+# 
+########################################################################
+# Reduzindo o Tamanho da Imagem
+########################################################################
+#
 imgCaravela = cv.resize(Imagem, (0, 0),fx=EscalaPercentual, fy=EscalaPercentual, interpolation = cv.INTER_AREA)
 
 # 
@@ -38,22 +56,22 @@ ImagemCanais = imgCaravela.shape[2]
 
 # 
 ########################################################################
-# Inserindo o Ruído (Média 128 e sigma 20)
+# Inserindo o Ruído 
 ########################################################################
 #
-RuidoGausiano = np.zeros((ImagemAltura, ImagemLargura) )
-cv.randn(RuidoGausiano,128,20)
-RuidoGausiano =(RuidoGausiano*0.5).astype(np.uint8)
-RuidoGausiano = cv.merge((RuidoGausiano,RuidoGausiano,RuidoGausiano))
+RuidoUniforme = np.zeros((ImagemAltura, ImagemLargura) )
+cv.randu(RuidoUniforme,0,255)
+RuidoUniforme=(RuidoUniforme*0.5).astype(np.uint8)
+RuidoUniforme = cv.merge((RuidoUniforme,RuidoUniforme,RuidoUniforme))
 
 # 
 ########################################################################
 # Recuperando as Dimensões da Imagem com Ruido
 ########################################################################
 #
-RuidoAltura = RuidoGausiano.shape[0]
-RuidoLargura = RuidoGausiano.shape[1]
-RuidoCanais  = RuidoGausiano.shape[2]
+RuidoAltura = RuidoUniforme.shape[0]
+RuidoLargura = RuidoUniforme.shape[1]
+RuidoCanais  = RuidoUniforme.shape[2]
 
 # 
 ########################################################################
@@ -77,14 +95,14 @@ print ( "# ")
 # Combinando as Imagens
 ########################################################################
 #
-ImagemResultado = cv.add ( imgCaravela,RuidoGausiano) 
+ImagemResultado = cv.add ( imgCaravela,RuidoUniforme) 
 
 # 
 ########################################################################
 # Salvando a Imagem com Ruído
 ########################################################################
 #
-cv.imwrite (CaminhoImagemRuido, ImagemResultado)
+cv.imwrite ( CaminhoImagemRuido, ImagemResultado)
 
 # 
 ########################################################################
@@ -92,7 +110,7 @@ cv.imwrite (CaminhoImagemRuido, ImagemResultado)
 ########################################################################
 #
 imgCaravela = cv.cvtColor(imgCaravela, cv.COLOR_BGR2RGB)
-RuidoGausiano = cv.cvtColor(RuidoGausiano, cv.COLOR_BGR2RGB)
+RuidoUniforme = cv.cvtColor(RuidoUniforme, cv.COLOR_BGR2RGB)
 ImagemResultado = cv.cvtColor(ImagemResultado, cv.COLOR_BGR2RGB)
 
 # 
@@ -101,25 +119,31 @@ ImagemResultado = cv.cvtColor(ImagemResultado, cv.COLOR_BGR2RGB)
 ########################################################################
 #
 Grafico = plt.figure(figsize=(10,8))
-plt.title( "Transição das Imagens", fontsize=20, weight='bold' )
-plt.axis ( "off" )
 
 Grafico.add_subplot(1,3,1)
 plt.imshow(imgCaravela )
-plt.axis("off")
 plt.title("Original")
 
 Grafico.add_subplot(1,3,2)
-plt.imshow(RuidoGausiano )
-plt.axis("off")
-plt.title("Ruído Gausiano")
+plt.imshow(RuidoUniforme )
+plt.title("Ruído Uniforme")
 
 Grafico.add_subplot(1,3,3)
 plt.imshow(ImagemResultado )
-plt.axis("off")
 plt.title("Imagens \n Combinadas")
+
+
+plt.subplots_adjust ( left   = 0.1,
+                      bottom = 0.1,
+                      right  = 0.9,
+                      top    = 0.9,
+                      wspace = 0.1,
+                      hspace = 0.1 )
+
 plt.show ()
+
 
 ########################################################################
 # FIM DO PROGRAMA
 ########################################################################
+

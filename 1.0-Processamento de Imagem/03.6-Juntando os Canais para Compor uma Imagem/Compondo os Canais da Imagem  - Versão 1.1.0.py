@@ -5,15 +5,17 @@
 #
 import cv2 as cv
 import matplotlib.pyplot as plt
+import os
 
 # 
 ########################################################################
 # Definições Gerais
 ########################################################################
 #
+BaseDir = "OpenCV/"
 NomeJanela = "Imagem Base"
 NomeImagem  = "Girassol.png"
-CaminhoBase = "/home/asoares/OpenCV/"
+CaminhoBase = "/home/asoares/" + BaseDir
 CaminhoImagem = CaminhoBase + "Imagens/"  
 
 # 
@@ -24,6 +26,26 @@ CaminhoImagem = CaminhoBase + "Imagens/"
 imgGirassolAzul = cv.imread ( CaminhoImagem + "GirassolAzul.png", cv.IMREAD_UNCHANGED)
 imgGirassolVerde = cv.imread ( CaminhoImagem + "GirassolVerde.png", cv.IMREAD_UNCHANGED)
 imgGirassolVermelho = cv.imread ( CaminhoImagem + "GirassolVermelho.png", cv.IMREAD_UNCHANGED)
+
+# 
+########################################################################
+# Checando se a Imagem Foi Lida com Sucesso
+########################################################################
+#
+if imgGirassolAzul is None:
+    os.system ("clear")
+    print( "Não Foi Localizada a Imagem : ", "GirassolAzul.png" )
+    exit ()
+
+if imgGirassolVerde is None:
+    os.system ("clear")
+    print( "Não Foi Localizada a Imagem : ", "imgGirassolVerde" )
+    exit ()
+
+if imgGirassolVermelho is None:
+    os.system ("clear")
+    print( "Não Foi Localizada a Imagem : ", "GirassolVermelho.png" )
+    exit ()
 
 # 
 ########################################################################
@@ -48,8 +70,6 @@ imgVermelho = cv.cvtColor(imgGirassolVermelho, cv.COLOR_BGR2RGB)
 ########################################################################
 #
 Grafico = plt.figure(figsize=(15,8))
-plt.title( "Transição das Imagens", fontsize=20, weight='bold' )
-plt.axis ( "off" )
 
 Grafico.add_subplot(1,4,1)
 plt.imshow(ImagemColorida )
@@ -66,6 +86,14 @@ plt.title("Canal Verde")
 Grafico.add_subplot(1,4,4)
 plt.imshow(imgVermelho )
 plt.title("Canal Vermelho")
+
+plt.subplots_adjust ( left   = 0.1,
+                      bottom = 0.1,
+                      right  = 0.9,
+                      top    = 0.9,
+                      wspace = 0.1,
+                      hspace = 0.1 )
+
 plt.show ()
 
 ########################################################################

@@ -4,16 +4,16 @@
 ########################################################################
 #
 import cv2 as cv
+import os
 
 # 
 ########################################################################
 # Definições Gerais
 ########################################################################
 #
-DirBase = "OpenCV/"
-NomeJanela = "Imagem Base"
-NomeImagem  = "Cafeteria.png"
-CaminhoBase = "/home/asoares/" + DirBase
+BaseDir = "OpenCV/"
+NomeImagem  = "QRCode.png"
+CaminhoBase = "/home/asoares/" + BaseDir
 CaminhoImagem = CaminhoBase + "Imagens/" 
 
 # 
@@ -21,43 +21,42 @@ CaminhoImagem = CaminhoBase + "Imagens/"
 # Lendo a Imagem
 ########################################################################
 #
-imgBase = cv.imread ( CaminhoImagem + NomeImagem, cv.IMREAD_COLOR)
+imgQRCode = cv.imread ( CaminhoImagem + NomeImagem, cv.IMREAD_COLOR)
 
 # 
 ########################################################################
-# Reduzindo as Dimensões da Imagem
+# Checando se a Imagem Foi Lida com Sucesso
 ########################################################################
 #
-imgBase = cv.resize(imgBase, (640, 480), interpolation = cv.INTER_AREA)
+if imgQRCode is None:
+    os.system ("clear")
+    print( "Não Foi Localizada a Imagem : ", NomeImagem)
+    exit ()
 
 # 
 ########################################################################
-# Inserindo a Borda
+# Inicializando o Detector
 ########################################################################
 #
-imgBorda = cv.copyMakeBorder (
-                                src=imgBase, 
-                                top=15, 
-                                bottom=15, 
-                                left=15, 
-                                right=15, 
-                                borderType=cv.BORDER_CONSTANT, 
-                                value=(255,255,255)
-                             ) 
+qrCodeDetector = cv.QRCodeDetector()
+qrDados, qrBox, _  = qrCodeDetector.detectAndDecode(imgQRCode)
 
 # 
 ########################################################################
-# Apresentando a Imagem 
+# Detectando e Decodificando o QRCode
 ########################################################################
 #
-cv.imshow ( "Cafeteria Original", imgBase)
-cv.imshow ( "Cafeteria com Borda", imgBorda)
+if qrBox is not None:
+    print ( "Dados Decodificados : ", qrDados )
+else:
+    print ( "Não foi detectado Nenhuma Informação \n")
 
 # 
 ########################################################################
-# Destruindo o Janelamento
+# Apresentando a Imagem
 ########################################################################
 #
+cv.imshow ( "JanelaBase", imgQRCode)
 cv.waitKey(0)
 cv.destroyAllWindows()
 
