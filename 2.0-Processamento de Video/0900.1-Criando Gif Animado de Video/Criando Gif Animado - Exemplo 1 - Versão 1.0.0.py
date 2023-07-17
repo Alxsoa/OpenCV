@@ -1,6 +1,3 @@
-# Referencia
-# https://www.blog.pythonlibrary.org/2021/06/23/creating-an-animated-gif-with-python/
-
 # 
 ########################################################################
 # Importação das Bibliotecas Necessárias
@@ -15,12 +12,12 @@ import os
 # Definições Gerais
 ########################################################################
 #
-BaseDir = "OpenCV/"
+BaseDir = "LocalCV/"
 NomeVideo = "Chaplin.mp4"
 NomeSaida = "Chaplin.gif"
 CaminhoBase = "/home/asoares/" + BaseDir
 CaminhoVideo = CaminhoBase + "Videos/"
-    
+
 # 
 ########################################################################
 # Checando se o Vídeo Está Disponível
@@ -55,12 +52,10 @@ Video.release()
 
 # 
 ########################################################################
-# Salvando o Gif Animado 
+# Salvando o Gif Animado a Duracao é em ms (50 fps == 20 duration)
 ########################################################################
 #
-with imageio.get_writer( CaminhoVideo + NomeSaida, mode="I") as EscreveGif:
-    for idx, frame in enumerate(lstFrameVideo):
-        EscreveGif.append_data(frame)
+imageio.mimsave( CaminhoVideo + NomeSaida, lstFrameVideo, duration=100)
 
 ########################################################################
 # FIM DO PROGRAMA

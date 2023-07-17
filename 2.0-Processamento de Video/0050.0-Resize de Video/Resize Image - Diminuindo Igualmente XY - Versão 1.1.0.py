@@ -3,8 +3,7 @@
 # Importação das Bibliotecas Necessárias
 ########################################################################
 #
-import cv2
-import imageio
+import cv2 as cv
 import os
 
 # 
@@ -12,50 +11,41 @@ import os
 # Definições Gerais
 ########################################################################
 #
-BaseDir = "OpenCV/"
-NomeVideo = "Chaplin.mp4"
-NomeSaida = "Chaplin.gif"
+BaseDir = "LocalCV/"
+NomeJanela = "Imagem Reduzida"
+NomeImagem  = "audi.jpg"
 CaminhoBase = "/home/asoares/" + BaseDir
-CaminhoVideo = CaminhoBase + "Videos/"
+CaminhoImagem = CaminhoBase + "Imagens/" 
 
 # 
 ########################################################################
-# Checando se o Vídeo Está Disponível
+# Lendo a Imagem
 ########################################################################
 #
-Video = cv2.VideoCapture( CaminhoVideo + NomeVideo )
-if not Video.isOpened():
+Imagem = cv.imread ( CaminhoImagem + NomeImagem, cv.IMREAD_COLOR)
+
+# 
+########################################################################
+# Checando se a Imagem Foi Lida com Sucesso
+########################################################################
+#
+if Imagem is None:
     os.system ("clear")
-    print( "Não Foi Localizado o Vídeo: ", NomeVideo)
+    print( "Não Foi Localizada a Imagem : ", NomeImagem)
     exit ()
 
 # 
 ########################################################################
-# Loop de Criação do Gif Animado
+# Apresentando a Imagem
 ########################################################################
 #
-lstFrameVideo = []
-while True:
-    Status, VideoFrame = Video.read()
 
-    if Status == True:
-        lstFrameVideo.append(VideoFrame)
-    else:
-        break
-
-# 
-########################################################################
-# Fechando o Video
-########################################################################
-#        
-Video.release()
-
-# 
-########################################################################
-# Salvando o Gif Animado a Duracao é em ms (50 fps == 20 duration)
-########################################################################
-#
-imageio.mimsave( CaminhoVideo + NomeSaida, lstFrameVideo, duration=100)
+imgReduzida = cv.resize(Imagem, (0,0), fx=0.5, fy=0.5, interpolation = cv.INTER_AREA)
+cv.imshow ( "JanelaBase", imgReduzida)
+cv.setWindowTitle("JanelaBase", NomeJanela )
+cv.imshow ( "Imagem Grande" , Imagem )
+cv.waitKey(0)
+cv.destroyAllWindows()
 
 ########################################################################
 # FIM DO PROGRAMA

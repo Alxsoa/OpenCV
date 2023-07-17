@@ -11,7 +11,7 @@ import numpy as np
 # Definições Gerais
 ########################################################################
 #
-DirBase = "OpenCV/"
+DirBase = "LocalCV/"
 NomeVideo = "PeixeNadando.mp4"
 CaminhoBase = "/home/asoares/" + DirBase
 CaminhoVideo = CaminhoBase + "Videos/" 
@@ -30,10 +30,13 @@ if (Video.isOpened()== False):
 
 # 
 ########################################################################
-# Criando o Subtrador 
+# Conhecendo o Primeiro Frame
 ########################################################################
 #
-subPeixe = cv.createBackgroundSubtractorMOG2 (history=200, varThreshold=50, detectShadows=False)
+_, imgPeixeFrameInicial = Video.read()
+imgPeixeFrameInicial = cv.resize(imgPeixeFrameInicial, (640, 480))
+imgPeixeFrameInicialCinza = cv.cvtColor(imgPeixeFrameInicial, cv.COLOR_BGR2GRAY)
+imgPeixeFrameInicialCinza = cv.GaussianBlur(imgPeixeFrameInicialCinza, (9, 9), 0)
 
 # 
 ########################################################################
@@ -61,21 +64,32 @@ while(Video.isOpened()):
 
 # 
 ########################################################################
-# Aplicando o Subtrador 
+# Diferença entre Frames
 ########################################################################
 #
-    imgPeixeMascara = subPeixe.apply(imgPeixeCinza) 
+    imgDiferenca = cv.absdiff(imgPeixeFrameInicialCinza, imgPeixeCinza)
+    _, imgDiferenca = cv.threshold(imgDiferenca, 25, 255, cv.THRESH_OTSU)
 
 # 
 ########################################################################
 # Apresentando o Resultado
 ########################################################################
 #
-    cv.imshow ( "Video Peixe", imgPeixe)
-    cv.imshow ( "Mascara da Imagem", imgPeixeMascara)    
+    imgTmpDiferenca = cv.cvtColor(imgDiferenca,cv.COLOR_GRAY2RGB)    
+    imgTmpPeixeCinza = cv.cvtColor(imgPeixeCinza,cv.COLOR_GRAY2RGB)        
+    imgTodasImagens = np.hstack(( imgPeixe, imgTmpPeixeCinza, imgTmpDiferenca ))   
+    
+    cv.imshow ( "Video Peixe", imgTodasImagens)  
     if cv.waitKey(25) & 0xFF == ord('q'):
       break
  
+# 
+########################################################################
+# Atualiza o Frame Inicial
+########################################################################
+#
+    imgPeixeFrameInicialCinza = imgPeixeCinza
+
   else: 
     break
   
@@ -85,65 +99,6 @@ while(Video.isOpened()):
 ########################################################################
 #  
 Video.release()
-cv.destroyAllWindows()
-
-########################################################################
-# FIM DO PROGRAMA
-########################################################################
-
-exit()
-
-# 
-########################################################################
-# Compatibilizando o Tamanho das Imagens
-########################################################################
-#
-imgPeixe = cv.resize(imgFrente, (640, 480))
-imgFundo  = cv.resize(imgFundo, (640, 480))
-
-# 
-########################################################################
-# Apresentando o Resultado Parcial
-########################################################################
-#
-cv.imshow ( "Imagem Frente", imgFrente)
-cv.imshow ( "Imagem Fundo", imgFundo)
-
-# 
-########################################################################
-# Segmentando a Imagem
-########################################################################
-#
-imgSegmentada = mp.solutions.selfie_segmentation
-imgSegmento = imgSegmentada.SelfieSegmentation(model_selection = 1)
-
-# 
-########################################################################
-# Criando a Máscara
-########################################################################
-#
-imgFrente = cv.cvtColor(imgFrente, cv.COLOR_BGR2RGB)
-imgResultado = imgSegmento.process(imgFrente)
-imgFrente = cv.cvtColor(imgFrente, cv.COLOR_RGB2BGR)
-imgSegmentoMascara = imgResultado.segmentation_mask
-
-# 
-########################################################################
-# Executando a União das Imagens
-########################################################################
-#
-Limiar = 0.6
-imgMascaraBinaria = imgSegmentoMascara > Limiar
-imgMascara3d = np.dstack((imgMascaraBinaria, imgMascaraBinaria, imgMascaraBinaria))
-imgResultadoFinal = np.where(imgMascara3d, imgFrente, imgFundo)
-
-# 
-########################################################################
-# Apresentando o Resultado Final
-########################################################################
-#
-cv.imshow ( "Resultado Final", imgResultadoFinal)
-cv.waitKey(0)
 cv.destroyAllWindows()
 
 ########################################################################

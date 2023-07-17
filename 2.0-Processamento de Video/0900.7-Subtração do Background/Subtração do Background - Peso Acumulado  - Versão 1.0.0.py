@@ -11,7 +11,7 @@ import numpy as np
 # Definições Gerais
 ########################################################################
 #
-DirBase = "OpenCV/"
+DirBase = "LocalCV/"
 NomeVideo = "PeixeNadando.mp4"
 CaminhoBase = "/home/asoares/" + DirBase
 CaminhoVideo = CaminhoBase + "Videos/" 
@@ -37,6 +37,7 @@ _, imgPeixeFrameInicial = Video.read()
 imgPeixeFrameInicial = cv.resize(imgPeixeFrameInicial, (640, 480))
 imgPeixeFrameInicialCinza = cv.cvtColor(imgPeixeFrameInicial, cv.COLOR_BGR2GRAY)
 imgPeixeFrameInicialCinza = cv.GaussianBlur(imgPeixeFrameInicialCinza, (9, 9), 0)
+ValorMedia = np.float32(imgPeixeFrameInicialCinza)
 
 # 
 ########################################################################
@@ -64,29 +65,48 @@ while(Video.isOpened()):
 
 # 
 ########################################################################
-# Diferença entre Frames
+# Melhorando o Contraste e Brilho
 ########################################################################
 #
-    imgDiferenca = cv.absdiff(imgPeixeFrameInicialCinza, imgPeixeCinza)
-    _, imgDiferenca = cv.threshold(imgDiferenca, 25, 255, cv.THRESH_BINARY)
+    alpha =  0.5 # Controle do Contraste
+    beta  = 5 # Controle do Brilho
+    imgPeixeCinza = cv.convertScaleAbs(imgPeixeCinza, alpha=alpha, beta=beta)
+
+# 
+########################################################################
+# Acumulando o Peso da Imagem
+########################################################################
+#
+    cv.accumulateWeighted(imgPeixeCinza, ValorMedia, 4)
+    ResultadoFrame = cv.convertScaleAbs(ValorMedia)
+
+# 
+########################################################################
+# Diferença Entre Frames
+########################################################################
+#
+    imgDiferenca = cv.absdiff(ResultadoFrame, imgPeixeCinza)
+    _, imgDiferenca = cv.threshold(imgDiferenca, 25, 255, cv.THRESH_OTSU)
 
 # 
 ########################################################################
 # Apresentando o Resultado
 ########################################################################
 #
-    cv.imshow ( "Video Peixe", imgPeixe)
-    cv.imshow ( "Video Diferenca", imgDiferenca)    
+    imgTmpDiferenca = cv.cvtColor(imgDiferenca,cv.COLOR_GRAY2RGB)    
+    imgTmpPeixeCinza = cv.cvtColor(imgPeixeCinza,cv.COLOR_GRAY2RGB)        
+    imgTodasImagens = np.hstack(( imgPeixe, imgTmpPeixeCinza, imgTmpDiferenca ))   
+    
+    cv.imshow ( "Video Peixe", imgTodasImagens)  
     if cv.waitKey(25) & 0xFF == ord('q'):
       break
  
 # 
 ########################################################################
-# Atualiza o Frame Inicial
+# Atualiza o Frame Inicial (Reduz Efeito da Iluminação)
 ########################################################################
 #
-    imgPeixeFrameInicialCinza = imgPeixeCinza
-
+    ValorMedia = np.float32(imgPeixeCinza)
   else: 
     break
   

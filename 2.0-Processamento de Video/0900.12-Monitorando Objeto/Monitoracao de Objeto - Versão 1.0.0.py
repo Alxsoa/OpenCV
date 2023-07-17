@@ -58,7 +58,7 @@ def SelecionaMonitor ( TipoMonitor ):
 # Definições Gerais
 ########################################################################
 #
-BaseDir = "OpenCV/"
+BaseDir = "LocalCV/"
 NomeVideo = "MovimentoPessoas.mp4"
 CaminhoBase = "/home/asoares/" + BaseDir
 CaminhoVideo = CaminhoBase + "Videos/" 

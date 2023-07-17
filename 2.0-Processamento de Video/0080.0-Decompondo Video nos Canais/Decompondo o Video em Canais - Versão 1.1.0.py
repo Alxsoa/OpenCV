@@ -11,7 +11,7 @@ import numpy as np
 # Definições Gerais
 ########################################################################
 #
-BaseDir = "OpenCV/"
+BaseDir = "LocalCV/"
 NomeVideo = "Escritorio.mp4"
 CaminhoBase = "/home/asoares/" + BaseDir
 CaminhoVideo= CaminhoBase + "Videos/" 

@@ -4,28 +4,34 @@
 ########################################################################
 #
 import cv2 as cv
+import os
 
 # 
 ########################################################################
 # Definições Gerais
 ########################################################################
 #
-BaseDir = "OpenCV/"
-NomeJanela = "Vídeo Transformado em Tons de Cinza"
-NomeVideo  = "Escritorio.mp4"
+BaseDir = "LocalCV/"
+NomeJanela = "Imagem Reduzida"
+NomeImagem  = "audi.jpg"
 CaminhoBase = "/home/asoares/" + BaseDir
-CaminhoVideo = CaminhoBase + "Videos/"  
+CaminhoImagem = CaminhoBase + "Imagens/" 
 
 # 
 ########################################################################
-# Lendo o Video
+# Lendo a Imagem
 ########################################################################
 #
-Video = cv.VideoCapture (CaminhoVideo+NomeVideo)
-if (Video.isOpened()== False): 
-    print ("########################################################################")
-    print ("# Video Não Encontrado ")
-    print ("########################################################################")
+Imagem = cv.imread ( CaminhoImagem + NomeImagem, cv.IMREAD_COLOR)
+
+# 
+########################################################################
+# Checando se a Imagem Foi Lida com Sucesso
+########################################################################
+#
+if Imagem is None:
+    os.system ("clear")
+    print( "Não Foi Localizada a Imagem : ", NomeImagem)
     exit ()
 
 # 
@@ -33,27 +39,12 @@ if (Video.isOpened()== False):
 # Apresentando a Imagem
 ########################################################################
 #
-while(Video.isOpened()):
-  Status, VideoFrame = Video.read()
-  if Status == True:
 
-    ImagemCinza = cv.cvtColor(VideoFrame, cv.COLOR_BGR2GRAY)
-    cv.imshow ( "JanelaBase", ImagemCinza)
-    cv.setWindowTitle("JanelaBase", NomeJanela )    
- 
-    if cv.waitKey(25) & 0xFF == ord('q'):
-      break
- 
-  else: 
-    break
-
-# 
-########################################################################
-# Apresentando a Imagem Cinza
-########################################################################
-#
+imgReduzida = cv.resize(Imagem, (0,0), fx=0.3, fy=0.5, interpolation = cv.INTER_AREA)
+cv.imshow ( "JanelaBase", imgReduzida)
+cv.setWindowTitle("JanelaBase", NomeJanela )
+cv.imshow ( "Imagem Grande" , Imagem )
 cv.waitKey(0)
-Video.release()
 cv.destroyAllWindows()
 
 ########################################################################

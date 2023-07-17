@@ -53,7 +53,7 @@ def CriaVideo (image_folder, video_name):
 # Definições Gerais
 ########################################################################
 #
-BaseDir = "LocalCV/"
+BaseDir = "OpenCV/"
 NomeVideo = "MovimentoPessoas.mp4"
 TmpDir = "Frames/"
 CaminhoBase = "/home/asoares/" + BaseDir
