@@ -5,6 +5,7 @@
 #
 import cv2 as cv
 import numpy as np
+import os
 
 # 
 ########################################################################
@@ -12,23 +13,23 @@ import numpy as np
 ########################################################################
 #
 NomeJanela   = "Video Base"
-NomeVideoIN  = "BaloesRuidoGaussiano.avi"
-NomeVideoOUT = "BaloesSemRuidoMedianBlur.avi"
+NomeVideoIN  = "BaloesRuidoGaussiano.mp4"
+NomeVideoOUT = "BaloesSemRuidoMedianBlur.mp4"
 CaminhoBase  = "/home/asoares/OpenCV/"
 CaminhoVideo = CaminhoBase + "Videos/" 
+Codec = cv.VideoWriter_fourcc('m','p','4','v')
 
 # 
 ########################################################################
-# Lendo o Video
+# Checando se o Vídeo Está Disponível
 ########################################################################
 #
 VideoIN = cv.VideoCapture (CaminhoVideo+NomeVideoIN)
-if (VideoIN.isOpened()== False): 
-    print ("########################################################################")
-    print ("# Video Não Encontrado ")
-    print ("########################################################################")
+if not VideoIN.isOpened():
+    os.system ("clear")
+    print( "Não Foi Localizado o Vídeo: ", NomeVideoIN)
     exit ()
-    
+
 # 
 ########################################################################
 # Recuperando o Tamanho do Frame
@@ -44,7 +45,7 @@ size = (LarguraFrame, AlturaFrame)
 ########################################################################
 #
 VideoOUT = cv.VideoWriter(CaminhoVideo+NomeVideoOUT,
-                         cv.VideoWriter_fourcc(*'MJPG'),
+                         Codec,
                          24, size)
 
 # 

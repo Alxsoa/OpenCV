@@ -5,6 +5,7 @@
 #
 import cv2 as cv
 import numpy as np
+import os
 
 # 
 ########################################################################
@@ -12,21 +13,21 @@ import numpy as np
 ########################################################################
 #
 NomeJanela   = "Video Base"
-NomeVideoIN  = "BaloesRuidoGaussiano.avi"
-NomeVideoOUT = "BaloesSemRuidoGaussiano.avi"
+NomeVideoIN  = "BaloesRuidoGaussiano.mp4"
+NomeVideoOUT = "BaloesSemRuidoGaussiano.mp4"
 CaminhoBase  = "/home/asoares/OpenCV/"
 CaminhoVideo = CaminhoBase + "Videos/" 
+Codec = cv.VideoWriter_fourcc('m','p','4','v')
 
 # 
 ########################################################################
-# Lendo o Video
+# Checando se o Vídeo Está Disponível
 ########################################################################
 #
 VideoIN = cv.VideoCapture (CaminhoVideo+NomeVideoIN)
-if (VideoIN.isOpened()== False): 
-    print ("########################################################################")
-    print ("# Video Não Encontrado ")
-    print ("########################################################################")
+if not VideoIN.isOpened():
+    os.system ("clear")
+    print( "Não Foi Localizado o Vídeo: ", NomeVideoIN)
     exit ()
 
 # 
@@ -44,7 +45,7 @@ size = (LarguraFrame, AlturaFrame)
 ########################################################################
 #
 VideoOUT = cv.VideoWriter(CaminhoVideo+NomeVideoOUT,
-                         cv.VideoWriter_fourcc(*'MJPG'),
+                         Codec,
                          24, size)
 
 # 
@@ -63,10 +64,6 @@ while(VideoIN.isOpened()):
     imgBaloes = cv.resize(VideoFrame,(0, 0),fx=0.5, fy=0.5, interpolation = cv.INTER_AREA)    
     ImagemSemRuido = cv.fastNlMeansDenoisingColored (imgBaloes,None, 3, 3, 7, 21)
     VideoArray.append(ImagemSemRuido)
-
-#    cv.imshow('Frame',ImagemSemRuido)
-#    if cv.waitKey(25) & 0xFF == ord('q'):
-#      break
  
   else: 
     break
@@ -92,7 +89,6 @@ VideoOUT.release()
 
 print ("# Fim da Geração do Vídeo ")
 print ("########################################################################")
-#cv.destroyAllWindows()
 
 ########################################################################
 # FIM DO PROGRAMA
