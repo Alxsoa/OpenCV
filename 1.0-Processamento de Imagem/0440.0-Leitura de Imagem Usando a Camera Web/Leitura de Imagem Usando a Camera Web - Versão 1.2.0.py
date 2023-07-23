@@ -60,6 +60,7 @@ print ("")
 while(True):
       
     Status, Frame = VideoCamera.read()
+    Frame = cv.flip(Frame, 1)    
     cv.imshow( "Camera Web", Frame)     
     if cv.waitKey(1) & 0xFF == ord('q'):
         break
