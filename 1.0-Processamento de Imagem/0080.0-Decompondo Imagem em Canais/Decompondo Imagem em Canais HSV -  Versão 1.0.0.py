@@ -1,6 +1,3 @@
-# Referencia
-# https://pyimagesearch.com/2021/01/23/splitting-and-merging-channels-with-opencv/
-
 # 
 ########################################################################
 # Importação das Bibliotecas Necessárias
@@ -9,16 +6,16 @@
 import cv2 as cv
 import matplotlib.pyplot as plt
 import os
-import numpy as np
 
 # 
 ########################################################################
 # Definições Gerais
 ########################################################################
 #
-BaseDir = "OpenCV/"
+BaseDir = "LocalCV/"
 NomeJanela = "Imagem Base"
 NomeImagem  = "Girassol.png"
+NomeDiagrama = "DiagramaHSV.png"
 CaminhoBase = "/home/asoares/" + BaseDir
 CaminhoImagem = CaminhoBase + "Imagens/"  
 
@@ -28,6 +25,7 @@ CaminhoImagem = CaminhoBase + "Imagens/"
 ########################################################################
 #
 ImagemColorida = cv.imread ( CaminhoImagem + NomeImagem, cv.IMREAD_COLOR)
+ImgDiagrama = cv.imread ( CaminhoImagem + NomeDiagrama, cv.IMREAD_COLOR)
 
 # 
 ########################################################################
@@ -39,32 +37,41 @@ if ImagemColorida is None:
     print( "Não Foi Localizada a Imagem : ", NomeImagem)
     exit ()
 
+if ImgDiagrama is None:
+    os.system ("clear")
+    print( "Não Foi Localizada a Imagem : ", NomeImagem)
+    exit ()
+
 # 
 ########################################################################
 # Reduzindo a Imagem
 ########################################################################
 #
-ImagemColorida = cv.resize ( ImagemColorida, (0,0), fx=0.5, fy=0.5, interpolation = cv.INTER_AREA)
+ImagemColorida = cv.resize(ImagemColorida, (300, 300), interpolation = cv.INTER_AREA)
+
+# 
+########################################################################
+# Transformando para o Padrào HSV
+########################################################################
+#
+imgRGB = cv.cvtColor(ImagemColorida, cv.COLOR_BGR2RGB)
+imgHSV = cv.cvtColor(imgRGB, cv.COLOR_RGB2HSV)
 
 # 
 ########################################################################
 # Decompondo a Imagem nos Diferentes Canais
 ########################################################################
 #
-Azul, Verde, Vermelho = cv.split(ImagemColorida)
-zeros = np.zeros(ImagemColorida.shape[:2], dtype="uint8")
-Vermelho = cv.merge([zeros, zeros, Vermelho])
-Verde = cv.merge([zeros, Verde, zeros])
-Azul = cv.merge([Azul, zeros, zeros])
+Matiz, Saturacao, Valor = cv.split(imgHSV)
 
 # 
 ########################################################################
 # Salvando os Canais em Arquivos Diferentes
 ########################################################################
 #
-cv.imwrite( CaminhoImagem+"GirassolAzul.png", Azul)
-cv.imwrite( CaminhoImagem+"GirassolVerde.png", Verde)
-cv.imwrite( CaminhoImagem+"GirassolVermelho.png", Vermelho)
+cv.imwrite( CaminhoImagem+"GirassolHSVMatiz.png", Matiz)
+cv.imwrite( CaminhoImagem+"GirassolHSVSaturacao.png", Saturacao)
+cv.imwrite( CaminhoImagem+"GirassolHSVValor.png", Valor)
 
 # 
 ########################################################################
@@ -72,38 +79,43 @@ cv.imwrite( CaminhoImagem+"GirassolVermelho.png", Vermelho)
 ########################################################################
 #
 ImagemColorida = cv.cvtColor(ImagemColorida, cv.COLOR_BGR2RGB)
-imgAzul = cv.cvtColor(Azul, cv.COLOR_BGR2RGB)
-imgVerde = cv.cvtColor(Verde, cv.COLOR_BGR2RGB)
-imgVermelho = cv.cvtColor(Vermelho, cv.COLOR_BGR2RGB)
+imgMatiz = cv.cvtColor(Matiz, cv.COLOR_BGR2RGB)
+imgSaturacao = cv.cvtColor(Saturacao, cv.COLOR_BGR2RGB)
+imgValor = cv.cvtColor(Valor, cv.COLOR_BGR2RGB)
 
 # 
 ########################################################################
 # Apresentação dos Resultados
 ########################################################################
 #
-Grafico = plt.figure(figsize=(15,8))
+Grafico = plt.figure(figsize=(16,8))
 
-Grafico.add_subplot(1,4,1)
+Grafico.add_subplot(1,5,1)
 plt.imshow(ImagemColorida )
 plt.title("Original")
 
-Grafico.add_subplot(1,4,2)
-plt.imshow(imgAzul )
-plt.title("Canal Azul")
+Grafico.add_subplot(1,5,2)
+plt.imshow(ImgDiagrama )
+plt.axis ( "off")
+plt.title("Diagrama HSV")
 
-Grafico.add_subplot(1,4,3)
-plt.imshow(imgVerde )
-plt.title("Canal Verde")
+Grafico.add_subplot(1,5,3)
+plt.imshow(imgMatiz )
+plt.title("Canal Matiz")
 
-Grafico.add_subplot(1,4,4)
-plt.imshow(imgVermelho )
-plt.title("Canal Vermelho")
+Grafico.add_subplot(1,5,4)
+plt.imshow(imgSaturacao )
+plt.title("Canal Saturacao")
+
+Grafico.add_subplot(1,5,5)
+plt.imshow(imgValor )
+plt.title("Canal Intensidade")
 
 plt.subplots_adjust ( left   = 0.1,
                       bottom = 0.1,
                       right  = 0.9,
                       top    = 0.9,
-                      wspace = 0.1,
+                      wspace = 0.2,
                       hspace = 0.1 )
 
 plt.show ()
