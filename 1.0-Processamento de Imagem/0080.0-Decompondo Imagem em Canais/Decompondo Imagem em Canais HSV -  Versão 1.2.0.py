@@ -6,26 +6,30 @@
 import cv2 as cv
 import matplotlib.pyplot as plt
 import os
+import numpy as np
+from pathlib import Path
 
 # 
 ########################################################################
 # Definições Gerais
 ########################################################################
 #
-BaseDir = "OpenCV/"
-NomeJanela = "Imagem Base"
-NomeImagem  = "Girassol.png"
-NomeDiagrama = "DiagramaLAB.jpg"
-CaminhoBase = "/home/asoares/" + BaseDir
-CaminhoImagem = CaminhoBase + "Imagens/"  
+NomeImagem  = "Lapis.jpg"
+NomeDiagrama = "DiagramaHSV.png"
+dirRaiz = Path.home()
+dirBase = "OpenCV/"
+dirImagem = "Imagens/"  
+dirCaminhoImagem = str(Path(dirRaiz, dirBase, dirImagem, NomeImagem))
+dirCaminhoDiagrama = str(Path(dirRaiz, dirBase, dirImagem, NomeDiagrama))
+dirSaida = str(Path(dirRaiz, dirBase, dirImagem))
 
 # 
 ########################################################################
 # Lendo a Imagem
 ########################################################################
 #
-ImagemColorida = cv.imread ( CaminhoImagem + NomeImagem, cv.IMREAD_COLOR)
-ImgDiagrama = cv.imread ( CaminhoImagem + NomeDiagrama, cv.IMREAD_COLOR)
+ImagemColorida = cv.imread ( dirCaminhoImagem, cv.IMREAD_COLOR)
+ImgDiagrama = cv.imread ( dirCaminhoDiagrama, cv.IMREAD_COLOR)
 
 # 
 ########################################################################
@@ -44,34 +48,27 @@ if ImgDiagrama is None:
 
 # 
 ########################################################################
-# Reduzindo a Imagem
-########################################################################
-#
-ImagemColorida = cv.resize(ImagemColorida, (300, 300), interpolation = cv.INTER_AREA)
-
-# 
-########################################################################
 # Transformando para o Padrào HSV
 ########################################################################
 #
 imgRGB = cv.cvtColor(ImagemColorida, cv.COLOR_BGR2RGB)
-imgLAB = cv.cvtColor(imgRGB, cv.COLOR_RGB2LAB)
+imgHSV = cv.cvtColor(imgRGB, cv.COLOR_RGB2HSV)
 
 # 
 ########################################################################
 # Decompondo a Imagem nos Diferentes Canais
 ########################################################################
 #
-L, A, B = cv.split(imgLAB)
+Matiz, Saturacao, Valor = cv.split(imgHSV)
 
 # 
 ########################################################################
 # Salvando os Canais em Arquivos Diferentes
 ########################################################################
 #
-cv.imwrite( CaminhoImagem+"GirassolLABL.png", L)
-cv.imwrite( CaminhoImagem+"GirassolLABA.png", A)
-cv.imwrite( CaminhoImagem+"GirassolLABB.png", B)
+cv.imwrite( dirSaida+"/LapisHSVMatiz.png", Matiz)
+cv.imwrite( dirSaida+"/LapisHSVSaturacao.png", Saturacao)
+cv.imwrite( dirSaida+"/LapisHSVValor.png", Valor)
 
 # 
 ########################################################################
@@ -79,9 +76,9 @@ cv.imwrite( CaminhoImagem+"GirassolLABB.png", B)
 ########################################################################
 #
 ImagemColorida = cv.cvtColor(ImagemColorida, cv.COLOR_BGR2RGB)
-imgL = cv.cvtColor(L, cv.COLOR_BGR2RGB)
-imgA = cv.cvtColor(A, cv.COLOR_BGR2RGB)
-imgB = cv.cvtColor(B, cv.COLOR_BGR2RGB)
+imgMatiz = cv.cvtColor(Matiz, cv.COLOR_BGR2RGB)
+imgSaturacao = cv.cvtColor(Saturacao, cv.COLOR_BGR2RGB)
+imgValor = cv.cvtColor(Valor, cv.COLOR_BGR2RGB)
 
 # 
 ########################################################################
@@ -97,25 +94,25 @@ plt.title("Original")
 Grafico.add_subplot(1,5,2)
 plt.imshow(ImgDiagrama )
 plt.axis ( "off")
-plt.title("Diagrama LAB")
+plt.title("Diagrama HSV")
 
 Grafico.add_subplot(1,5,3)
-plt.imshow(imgL )
-plt.title("Canal Lightness")
+plt.imshow(imgMatiz )
+plt.title("Canal Matiz")
 
 Grafico.add_subplot(1,5,4)
-plt.imshow(imgA )
-plt.title("Canal A")
+plt.imshow(imgSaturacao )
+plt.title("Canal Saturacao")
 
 Grafico.add_subplot(1,5,5)
-plt.imshow(imgB )
-plt.title("Canal B")
+plt.imshow(imgValor )
+plt.title("Canal Intensidade")
 
 plt.subplots_adjust ( left   = 0.1,
                       bottom = 0.1,
                       right  = 0.9,
                       top    = 0.9,
-                      wspace = 0.2,
+                      wspace = 0.1,
                       hspace = 0.1 )
 
 plt.show ()

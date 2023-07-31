@@ -6,26 +6,29 @@
 import cv2 as cv
 import matplotlib.pyplot as plt
 import os
+from pathlib import Path
 
 # 
 ########################################################################
 # Definições Gerais
 ########################################################################
 #
-BaseDir = "OpenCV/"
-NomeJanela = "Imagem Base"
-NomeImagem  = "Girassol.png"
+NomeImagem  = "Lapis.jpg"
 NomeDiagrama = "DiagramaYCbCr.png"
-CaminhoBase = "/home/asoares/" + BaseDir
-CaminhoImagem = CaminhoBase + "Imagens/"  
+dirRaiz = Path.home()
+dirBase = "OpenCV/"
+dirImagem = "Imagens/"  
+dirCaminhoImagem = str(Path(dirRaiz, dirBase, dirImagem, NomeImagem))
+dirCaminhoDiagrama = str(Path(dirRaiz, dirBase, dirImagem, NomeDiagrama))
+dirSaida = str(Path(dirRaiz, dirBase, dirImagem))
 
 # 
 ########################################################################
 # Lendo a Imagem
 ########################################################################
 #
-ImagemColorida = cv.imread ( CaminhoImagem + NomeImagem, cv.IMREAD_COLOR)
-ImgDiagrama = cv.imread ( CaminhoImagem + NomeDiagrama, cv.IMREAD_COLOR)
+ImagemColorida = cv.imread ( dirCaminhoImagem, cv.IMREAD_COLOR)
+ImgDiagrama = cv.imread ( dirCaminhoDiagrama, cv.IMREAD_COLOR)
 
 # 
 ########################################################################
@@ -41,13 +44,6 @@ if ImgDiagrama is None:
     os.system ("clear")
     print( "Não Foi Localizada a Imagem : ", NomeImagem)
     exit ()
-
-# 
-########################################################################
-# Reduzindo a Imagem
-########################################################################
-#
-ImagemColorida = cv.resize(ImagemColorida, (300, 300), interpolation = cv.INTER_AREA)
 
 # 
 ########################################################################
@@ -69,9 +65,9 @@ Y, Cr, Cb = cv.split(imgYCrCb)
 # Salvando os Canais em Arquivos Diferentes
 ########################################################################
 #
-cv.imwrite( CaminhoImagem+"GirassolYCrCbY.png", Y)
-cv.imwrite( CaminhoImagem+"GirassolYCrCbCr.png", Cr)
-cv.imwrite( CaminhoImagem+"GirassolYCrCbCb.png", Cb)
+cv.imwrite( dirSaida+"LapisYCrCbY.png", Y)
+cv.imwrite( dirSaida+"LapisYCrCbCr.png", Cr)
+cv.imwrite( dirSaida+"LapisYCrCbCb.png", Cb)
 
 # 
 ########################################################################

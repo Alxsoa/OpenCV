@@ -6,26 +6,29 @@
 import cv2 as cv
 import matplotlib.pyplot as plt
 import os
+from pathlib import Path
 
 # 
 ########################################################################
 # Definições Gerais
 ########################################################################
 #
-BaseDir = "OpenCV/"
-NomeJanela = "Imagem Base"
-NomeImagem  = "Girassol.png"
-NomeDiagrama = "DiagramaRGB.png"
-CaminhoBase = "/home/asoares/" + BaseDir
-CaminhoImagem = CaminhoBase + "Imagens/"  
+NomeImagem  = "Lapis.jpg"
+NomeDiagrama = "DiagramaLAB.jpg"
+dirRaiz = Path.home()
+dirBase = "OpenCV/"
+dirImagem = "Imagens/"  
+dirCaminhoImagem = str(Path(dirRaiz, dirBase, dirImagem, NomeImagem))
+dirCaminhoDiagrama = str(Path(dirRaiz, dirBase, dirImagem, NomeDiagrama))
+dirSaida = str(Path(dirRaiz, dirBase, dirImagem))
 
 # 
 ########################################################################
 # Lendo a Imagem
 ########################################################################
 #
-ImagemColorida = cv.imread ( CaminhoImagem + NomeImagem, cv.IMREAD_COLOR)
-ImgDiagrama = cv.imread ( CaminhoImagem + NomeDiagrama, cv.IMREAD_COLOR)
+ImagemColorida = cv.imread ( dirCaminhoImagem, cv.IMREAD_COLOR)
+ImgDiagrama = cv.imread ( dirCaminhoDiagrama, cv.IMREAD_COLOR)
 
 # 
 ########################################################################
@@ -44,26 +47,26 @@ if ImgDiagrama is None:
 
 # 
 ########################################################################
-# Reduzindo a Imagem
+# Transformando para o Padrào HSV
 ########################################################################
 #
-ImagemColorida = cv.resize(ImagemColorida, (300, 300), interpolation = cv.INTER_AREA)
+imgLAB = cv.cvtColor(ImagemColorida, cv.COLOR_BGR2LAB)
 
 # 
 ########################################################################
 # Decompondo a Imagem nos Diferentes Canais
 ########################################################################
 #
-Azul, Verde, Vermelho = cv.split(ImagemColorida)
+L, A, B = cv.split(imgLAB)
 
 # 
 ########################################################################
 # Salvando os Canais em Arquivos Diferentes
 ########################################################################
 #
-cv.imwrite( CaminhoImagem+"GirassolAzul.png", Azul)
-cv.imwrite( CaminhoImagem+"GirassolVerde.png", Verde)
-cv.imwrite( CaminhoImagem+"GirassolVermelho.png", Vermelho)
+cv.imwrite( dirSaida+"/LapisLABL.png", L)
+cv.imwrite( dirSaida+"/LapisLABA.png", A)
+cv.imwrite( dirSaida+"/LapisLABB.png", B)
 
 # 
 ########################################################################
@@ -71,9 +74,9 @@ cv.imwrite( CaminhoImagem+"GirassolVermelho.png", Vermelho)
 ########################################################################
 #
 ImagemColorida = cv.cvtColor(ImagemColorida, cv.COLOR_BGR2RGB)
-imgAzul = cv.cvtColor(Azul, cv.COLOR_BGR2RGB)
-imgVerde = cv.cvtColor(Verde, cv.COLOR_BGR2RGB)
-imgVermelho = cv.cvtColor(Vermelho, cv.COLOR_BGR2RGB)
+imgL = cv.cvtColor(L, cv.COLOR_BGR2RGB)
+imgA = cv.cvtColor(A, cv.COLOR_BGR2RGB)
+imgB = cv.cvtColor(B, cv.COLOR_BGR2RGB)
 
 # 
 ########################################################################
@@ -89,19 +92,19 @@ plt.title("Original")
 Grafico.add_subplot(1,5,2)
 plt.imshow(ImgDiagrama )
 plt.axis ( "off")
-plt.title("Diagrama RGB")
+plt.title("Diagrama LAB")
 
 Grafico.add_subplot(1,5,3)
-plt.imshow(imgAzul )
-plt.title("Canal Azul")
+plt.imshow(imgL )
+plt.title("Canal Lightness")
 
 Grafico.add_subplot(1,5,4)
-plt.imshow(imgVerde )
-plt.title("Canal Verde")
+plt.imshow(imgA )
+plt.title("Canal A")
 
 Grafico.add_subplot(1,5,5)
-plt.imshow(imgVermelho )
-plt.title("Canal Vermelho")
+plt.imshow(imgB )
+plt.title("Canal B")
 
 plt.subplots_adjust ( left   = 0.1,
                       bottom = 0.1,
