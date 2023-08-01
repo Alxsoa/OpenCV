@@ -17,11 +17,14 @@ from pathlib import Path
 NomeImagem  = "Lapis.jpg"
 NomeDiagrama = "DiagramaHSV.png"
 dirRaiz = Path.home()
-dirBase = "OpenCV/"
-dirImagem = "Imagens/"  
+dirBase = "OpenCV"
+dirImagem = "Imagens"  
 dirCaminhoImagem = str(Path(dirRaiz, dirBase, dirImagem, NomeImagem))
 dirCaminhoDiagrama = str(Path(dirRaiz, dirBase, dirImagem, NomeDiagrama))
-dirSaida = str(Path(dirRaiz, dirBase, dirImagem))
+
+dirSaidaCanal1 = str(Path(dirRaiz, dirBase, dirImagem, "LapisHSVMatiz.png"))
+dirSaidaCanal2 = str(Path(dirRaiz, dirBase, dirImagem, "LapisHSVSaturacao.png"))
+dirSaidaCanal3 = str(Path(dirRaiz, dirBase, dirImagem, "LapisHSVValor.png"))
 
 # 
 ########################################################################
@@ -43,7 +46,7 @@ if ImagemColorida is None:
 
 if ImgDiagrama is None:
     os.system ("clear")
-    print( "Não Foi Localizada a Imagem : ", NomeImagem)
+    print( "Não Foi Localizada a Imagem : ", NomeDiagrama)
     exit ()
 
 # 
@@ -66,9 +69,9 @@ Matiz, Saturacao, Valor = cv.split(imgHSV)
 # Salvando os Canais em Arquivos Diferentes
 ########################################################################
 #
-cv.imwrite( dirSaida+"/LapisHSVMatiz.png", Matiz)
-cv.imwrite( dirSaida+"/LapisHSVSaturacao.png", Saturacao)
-cv.imwrite( dirSaida+"/LapisHSVValor.png", Valor)
+cv.imwrite( dirSaidaCanal1, Matiz)
+cv.imwrite( dirSaidaCanal2, Saturacao)
+cv.imwrite( dirSaidaCanal3, Valor)
 
 # 
 ########################################################################

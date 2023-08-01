@@ -20,11 +20,14 @@ from pathlib import Path
 NomeImagem  = "Lapis.jpg"
 NomeDiagrama = "DiagramaRGB.png"
 dirRaiz = Path.home()
-dirBase = "OpenCV/"
-dirImagem = "Imagens/"  
+dirBase = "OpenCV"
+dirImagem = "Imagens"  
 dirCaminhoImagem = str(Path(dirRaiz, dirBase, dirImagem, NomeImagem))
 dirCaminhoDiagrama = str(Path(dirRaiz, dirBase, dirImagem, NomeDiagrama))
-dirSaida = str(Path(dirRaiz, dirBase, dirImagem))
+
+dirSaidaCanal1 = str(Path(dirRaiz, dirBase, dirImagem, "LapisAzulCMAP.png"))
+dirSaidaCanal2 = str(Path(dirRaiz, dirBase, dirImagem, "LapisVerdeCMAP.png"))
+dirSaidaCanal3 = str(Path(dirRaiz, dirBase, dirImagem, "LapisVermelhoCMAP.png"))
 
 # 
 ########################################################################
@@ -46,7 +49,7 @@ if ImagemColorida is None:
 
 if ImgDiagrama is None:
     os.system ("clear")
-    print( "Não Foi Localizada a Imagem : ", NomeImagem)
+    print( "Não Foi Localizada a Imagem : ", NomeDiagrama)
     exit ()
 
 # 
@@ -61,9 +64,9 @@ Azul, Verde, Vermelho = cv.split(ImagemColorida)
 # Salvando os Canais em Arquivos Diferentes
 ########################################################################
 #
-cv.imwrite( dirSaida+"/LapisAzulCMAP.png", Azul)
-cv.imwrite( dirSaida+"/LapisVerdeCMAP.png", Verde)
-cv.imwrite( dirSaida+"/LapisVermelhoCMAP.png", Vermelho)
+cv.imwrite( dirSaidaCanal1, Azul)
+cv.imwrite( dirSaidaCanal2, Verde)
+cv.imwrite( dirSaidaCanal3, Vermelho)
 
 # 
 ########################################################################

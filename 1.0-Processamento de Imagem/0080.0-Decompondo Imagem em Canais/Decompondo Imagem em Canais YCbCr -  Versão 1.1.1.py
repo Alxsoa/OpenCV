@@ -6,8 +6,6 @@
 import cv2 as cv
 import matplotlib.pyplot as plt
 import os
-import numpy as np
-from pathlib import Path
 from pathlib import Path
 
 # 
@@ -16,13 +14,16 @@ from pathlib import Path
 ########################################################################
 #
 NomeImagem  = "Lapis.jpg"
-NomeDiagrama = "DiagramaRGB.png"
+NomeDiagrama = "DiagramaYCbCr.png"
 dirRaiz = Path.home()
-dirBase = "OpenCV/"
-dirImagem = "Imagens/"  
+dirBase = "OpenCV"
+dirImagem = "Imagens"  
 dirCaminhoImagem = str(Path(dirRaiz, dirBase, dirImagem, NomeImagem))
 dirCaminhoDiagrama = str(Path(dirRaiz, dirBase, dirImagem, NomeDiagrama))
-dirSaida = str(Path(dirRaiz, dirBase, dirImagem))
+
+dirSaidaCanal1 = str(Path(dirRaiz, dirBase, dirImagem, "LapisYCrCbY.png"))
+dirSaidaCanal2 = str(Path(dirRaiz, dirBase, dirImagem, "LapisYCrCbCr.png"))
+dirSaidaCanal3 = str(Path(dirRaiz, dirBase, dirImagem, "LapisYCrCbCb.png"))
 
 # 
 ########################################################################
@@ -49,10 +50,27 @@ if ImgDiagrama is None:
 
 # 
 ########################################################################
+# Transformando para o Padrào HSV
+########################################################################
+#
+imgRGB = cv.cvtColor(ImagemColorida, cv.COLOR_BGR2RGB)
+imgYCrCb = cv.cvtColor(imgRGB, cv.COLOR_RGB2YCrCb)
+
+# 
+########################################################################
 # Decompondo a Imagem nos Diferentes Canais
 ########################################################################
 #
-Azul, Verde, Vermelho = cv.split(ImagemColorida)
+Y, Cr, Cb = cv.split(imgYCrCb)
+
+# 
+########################################################################
+# Salvando os Canais em Arquivos Diferentes
+########################################################################
+#
+cv.imwrite( dirSaidaCanal1, Y)
+cv.imwrite( dirSaidaCanal2, Cr)
+cv.imwrite( dirSaidaCanal3, Cb)
 
 # 
 ########################################################################
@@ -60,18 +78,9 @@ Azul, Verde, Vermelho = cv.split(ImagemColorida)
 ########################################################################
 #
 ImagemColorida = cv.cvtColor(ImagemColorida, cv.COLOR_BGR2RGB)
-imgAzul = cv.cvtColor(Azul, cv.COLOR_BGR2RGB)
-imgVerde = cv.cvtColor(Verde, cv.COLOR_BGR2RGB)
-imgVermelho = cv.cvtColor(Vermelho, cv.COLOR_BGR2RGB)
-
-# 
-########################################################################
-# Salvando os Canais em Arquivos Diferentes
-########################################################################
-#
-cv.imwrite( dirSaida+"/LapisRGBAzul.png", imgAzul)
-cv.imwrite( dirSaida+"/LapisRGBVerde.png", imgVerde)
-cv.imwrite( dirSaida+"/LapisRGBVermelho.png", imgVermelho)
+imgY = cv.cvtColor(Y, cv.COLOR_BGR2RGB)
+imgCr = cv.cvtColor(Cr, cv.COLOR_BGR2RGB)
+imgCb = cv.cvtColor(Cb, cv.COLOR_BGR2RGB)
 
 # 
 ########################################################################
@@ -87,19 +96,19 @@ plt.title("Original")
 Grafico.add_subplot(1,5,2)
 plt.imshow(ImgDiagrama )
 plt.axis ( "off")
-plt.title("Diagrama RGB")
+plt.title("Diagrama YCrCb")
 
 Grafico.add_subplot(1,5,3)
-plt.imshow(imgAzul )
-plt.title("Canal Azul")
+plt.imshow(imgY )
+plt.title("Canal Y")
 
 Grafico.add_subplot(1,5,4)
-plt.imshow(imgVerde )
-plt.title("Canal Verde")
+plt.imshow(imgCr )
+plt.title("Canal Cr")
 
 Grafico.add_subplot(1,5,5)
-plt.imshow(imgVermelho )
-plt.title("Canal Vermelho")
+plt.imshow(imgCb )
+plt.title("Canal Cb")
 
 plt.subplots_adjust ( left   = 0.1,
                       bottom = 0.1,

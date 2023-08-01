@@ -1,6 +1,3 @@
-# Referencia
-# https://pyimagesearch.com/2021/01/23/splitting-and-merging-channels-with-opencv/
-
 # 
 ########################################################################
 # Importação das Bibliotecas Necessárias
@@ -11,6 +8,7 @@ import matplotlib.pyplot as plt
 import os
 import numpy as np
 from pathlib import Path
+from pathlib import Path
 
 # 
 ########################################################################
@@ -20,11 +18,14 @@ from pathlib import Path
 NomeImagem  = "Lapis.jpg"
 NomeDiagrama = "DiagramaRGB.png"
 dirRaiz = Path.home()
-dirBase = "OpenCV/"
-dirImagem = "Imagens/"  
+dirBase = "OpenCV"
+dirImagem = "Imagens"  
 dirCaminhoImagem = str(Path(dirRaiz, dirBase, dirImagem, NomeImagem))
 dirCaminhoDiagrama = str(Path(dirRaiz, dirBase, dirImagem, NomeDiagrama))
-dirSaida = str(Path(dirRaiz, dirBase, dirImagem))
+
+dirSaidaCanal1 = str(Path(dirRaiz, dirBase, dirImagem, "LapisRGBAzul.png"))
+dirSaidaCanal2 = str(Path(dirRaiz, dirBase, dirImagem, "LapisRGBVerde.png"))
+dirSaidaCanal3 = str(Path(dirRaiz, dirBase, dirImagem, "LapisRGBVermelho.png"))
 
 # 
 ########################################################################
@@ -46,7 +47,7 @@ if ImagemColorida is None:
 
 if ImgDiagrama is None:
     os.system ("clear")
-    print( "Não Foi Localizada a Imagem : ", NomeImagem)
+    print( "Não Foi Localizada a Imagem : ", NomeDiagrama)
     exit ()
 
 # 
@@ -55,19 +56,6 @@ if ImgDiagrama is None:
 ########################################################################
 #
 Azul, Verde, Vermelho = cv.split(ImagemColorida)
-zeros = np.zeros(ImagemColorida.shape[:2], dtype="uint8")
-Vermelho = cv.merge([zeros, zeros, Vermelho])
-Verde = cv.merge([zeros, Verde, zeros])
-Azul = cv.merge([Azul, zeros, zeros])
-
-# 
-########################################################################
-# Salvando os Canais em Arquivos Diferentes
-########################################################################
-#
-cv.imwrite( dirSaida+"/LapisAzul.png", Azul)
-cv.imwrite( dirSaida+"/LapisVerde.png", Verde)
-cv.imwrite( dirSaida+"/LapisVermelho.png", Vermelho)
 
 # 
 ########################################################################
@@ -81,10 +69,19 @@ imgVermelho = cv.cvtColor(Vermelho, cv.COLOR_BGR2RGB)
 
 # 
 ########################################################################
+# Salvando os Canais em Arquivos Diferentes
+########################################################################
+#
+cv.imwrite( dirSaidaCanal1, imgAzul)
+cv.imwrite( dirSaidaCanal2, imgVerde)
+cv.imwrite( dirSaidaCanal3, imgVermelho)
+
+# 
+########################################################################
 # Apresentação dos Resultados
 ########################################################################
 #
-Grafico = plt.figure(figsize=(15,8))
+Grafico = plt.figure(figsize=(16,8))
 
 Grafico.add_subplot(1,5,1)
 plt.imshow(ImagemColorida )
@@ -111,7 +108,7 @@ plt.subplots_adjust ( left   = 0.1,
                       bottom = 0.1,
                       right  = 0.9,
                       top    = 0.9,
-                      wspace = 0.1,
+                      wspace = 0.2,
                       hspace = 0.1 )
 
 plt.show ()

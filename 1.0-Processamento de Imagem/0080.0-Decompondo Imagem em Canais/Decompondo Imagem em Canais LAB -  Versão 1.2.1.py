@@ -16,11 +16,15 @@ from pathlib import Path
 NomeImagem  = "Lapis.jpg"
 NomeDiagrama = "DiagramaLAB.jpg"
 dirRaiz = Path.home()
-dirBase = "OpenCV/"
-dirImagem = "Imagens/"  
+dirBase = "OpenCV"
+dirImagem = "Imagens"  
 dirCaminhoImagem = str(Path(dirRaiz, dirBase, dirImagem, NomeImagem))
 dirCaminhoDiagrama = str(Path(dirRaiz, dirBase, dirImagem, NomeDiagrama))
 dirSaida = str(Path(dirRaiz, dirBase, dirImagem))
+
+dirSaidaCanal1 = str(Path(dirRaiz, dirBase, dirImagem, "LapisLABL.png"))
+dirSaidaCanal2 = str(Path(dirRaiz, dirBase, dirImagem, "LapisLABA.png"))
+dirSaidaCanal3 = str(Path(dirRaiz, dirBase, dirImagem, "LapisLABB.png"))
 
 # 
 ########################################################################
@@ -42,7 +46,7 @@ if ImagemColorida is None:
 
 if ImgDiagrama is None:
     os.system ("clear")
-    print( "Não Foi Localizada a Imagem : ", NomeImagem)
+    print( "Não Foi Localizada a Imagem : ", NomeDiagrama)
     exit ()
 
 # 
@@ -63,10 +67,9 @@ L, A, B = cv.split(imgLAB)
 ########################################################################
 # Salvando os Canais em Arquivos Diferentes
 ########################################################################
-#
-cv.imwrite( dirSaida+"/LapisLABL.png", L)
-cv.imwrite( dirSaida+"/LapisLABA.png", A)
-cv.imwrite( dirSaida+"/LapisLABB.png", B)
+cv.imwrite( dirSaidaCanal1, L)
+cv.imwrite( dirSaidaCanal2, A)
+cv.imwrite( dirSaidaCanal3, B)
 
 # 
 ########################################################################

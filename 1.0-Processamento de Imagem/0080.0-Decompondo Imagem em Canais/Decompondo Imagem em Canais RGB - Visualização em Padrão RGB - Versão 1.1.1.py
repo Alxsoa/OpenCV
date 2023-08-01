@@ -1,3 +1,6 @@
+# Referencia
+# https://pyimagesearch.com/2021/01/23/splitting-and-merging-channels-with-opencv/
+
 # 
 ########################################################################
 # Importação das Bibliotecas Necessárias
@@ -6,6 +9,7 @@
 import cv2 as cv
 import matplotlib.pyplot as plt
 import os
+import numpy as np
 from pathlib import Path
 
 # 
@@ -14,13 +18,16 @@ from pathlib import Path
 ########################################################################
 #
 NomeImagem  = "Lapis.jpg"
-NomeDiagrama = "DiagramaYCbCr.png"
+NomeDiagrama = "DiagramaRGB.png"
 dirRaiz = Path.home()
-dirBase = "OpenCV/"
-dirImagem = "Imagens/"  
+dirBase = "OpenCV"
+dirImagem = "Imagens"  
 dirCaminhoImagem = str(Path(dirRaiz, dirBase, dirImagem, NomeImagem))
 dirCaminhoDiagrama = str(Path(dirRaiz, dirBase, dirImagem, NomeDiagrama))
-dirSaida = str(Path(dirRaiz, dirBase, dirImagem))
+
+dirSaidaCanal1 = str(Path(dirRaiz, dirBase, dirImagem, "LapisAzul.png"))
+dirSaidaCanal2 = str(Path(dirRaiz, dirBase, dirImagem, "LapisVerde.png"))
+dirSaidaCanal3 = str(Path(dirRaiz, dirBase, dirImagem, "LapisVermelho.png"))
 
 # 
 ########################################################################
@@ -42,32 +49,28 @@ if ImagemColorida is None:
 
 if ImgDiagrama is None:
     os.system ("clear")
-    print( "Não Foi Localizada a Imagem : ", NomeImagem)
+    print( "Não Foi Localizada a Imagem : ", NomeDiagrama)
     exit ()
-
-# 
-########################################################################
-# Transformando para o Padrào HSV
-########################################################################
-#
-imgRGB = cv.cvtColor(ImagemColorida, cv.COLOR_BGR2RGB)
-imgYCrCb = cv.cvtColor(imgRGB, cv.COLOR_RGB2YCrCb)
 
 # 
 ########################################################################
 # Decompondo a Imagem nos Diferentes Canais
 ########################################################################
 #
-Y, Cr, Cb = cv.split(imgYCrCb)
+Azul, Verde, Vermelho = cv.split(ImagemColorida)
+zeros = np.zeros(ImagemColorida.shape[:2], dtype="uint8")
+Vermelho = cv.merge([zeros, zeros, Vermelho])
+Verde = cv.merge([zeros, Verde, zeros])
+Azul = cv.merge([Azul, zeros, zeros])
 
 # 
 ########################################################################
 # Salvando os Canais em Arquivos Diferentes
 ########################################################################
 #
-cv.imwrite( dirSaida+"LapisYCrCbY.png", Y)
-cv.imwrite( dirSaida+"LapisYCrCbCr.png", Cr)
-cv.imwrite( dirSaida+"LapisYCrCbCb.png", Cb)
+cv.imwrite( dirSaidaCanal1, Azul)
+cv.imwrite( dirSaidaCanal2, Verde)
+cv.imwrite( dirSaidaCanal3,  Vermelho)
 
 # 
 ########################################################################
@@ -75,16 +78,16 @@ cv.imwrite( dirSaida+"LapisYCrCbCb.png", Cb)
 ########################################################################
 #
 ImagemColorida = cv.cvtColor(ImagemColorida, cv.COLOR_BGR2RGB)
-imgY = cv.cvtColor(Y, cv.COLOR_BGR2RGB)
-imgCr = cv.cvtColor(Cr, cv.COLOR_BGR2RGB)
-imgCb = cv.cvtColor(Cb, cv.COLOR_BGR2RGB)
+imgAzul = cv.cvtColor(Azul, cv.COLOR_BGR2RGB)
+imgVerde = cv.cvtColor(Verde, cv.COLOR_BGR2RGB)
+imgVermelho = cv.cvtColor(Vermelho, cv.COLOR_BGR2RGB)
 
 # 
 ########################################################################
 # Apresentação dos Resultados
 ########################################################################
 #
-Grafico = plt.figure(figsize=(16,8))
+Grafico = plt.figure(figsize=(15,8))
 
 Grafico.add_subplot(1,5,1)
 plt.imshow(ImagemColorida )
@@ -93,25 +96,25 @@ plt.title("Original")
 Grafico.add_subplot(1,5,2)
 plt.imshow(ImgDiagrama )
 plt.axis ( "off")
-plt.title("Diagrama YCrCb")
+plt.title("Diagrama RGB")
 
 Grafico.add_subplot(1,5,3)
-plt.imshow(imgY )
-plt.title("Canal Y")
+plt.imshow(imgAzul )
+plt.title("Canal Azul")
 
 Grafico.add_subplot(1,5,4)
-plt.imshow(imgCr )
-plt.title("Canal Cr")
+plt.imshow(imgVerde )
+plt.title("Canal Verde")
 
 Grafico.add_subplot(1,5,5)
-plt.imshow(imgCb )
-plt.title("Canal Cb")
+plt.imshow(imgVermelho )
+plt.title("Canal Vermelho")
 
 plt.subplots_adjust ( left   = 0.1,
                       bottom = 0.1,
                       right  = 0.9,
                       top    = 0.9,
-                      wspace = 0.2,
+                      wspace = 0.1,
                       hspace = 0.1 )
 
 plt.show ()
