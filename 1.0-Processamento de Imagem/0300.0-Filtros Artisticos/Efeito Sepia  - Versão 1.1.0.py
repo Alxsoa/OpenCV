@@ -7,7 +7,9 @@
 ########################################################################
 #
 import cv2 as cv
+import os
 import numpy as np
+from pathlib import Path
 
 # 
 ########################################################################
@@ -32,30 +34,50 @@ def EfeitoSepia ( imgTemporario ):
     imgTemporario = np.array(imgTemporario, dtype=np.uint8)
     return (imgTemporario)
 
+def LimpaTerminal ():
+    if os.name == "nt":
+       _ = os.system( "cls" )
+    else:
+      _ = os.system( "clear ")
+    return ()
+
 # 
 ########################################################################
 # Definições Gerais
 ########################################################################
 #
-BaseDir = "LocalCV/"
-NomeJanela = "Imagem Base"
-NomeImagem  = "Padaria.jpg"
-CaminhoBase = "/home/asoares/" + BaseDir
-CaminhoImagem = CaminhoBase + "Imagens/" 
+NomeImagem = "Padaria.jpg"
+NomeOutput = "EfeitoSepia.jpg"
+dirRaiz = Path.home()
+dirBase = "LocalCV"
+dirImagem = "Imagens"  
+dirOutput = "Output"
+dirCaminhoImagem = str(Path(dirRaiz, dirBase, dirImagem, NomeImagem))
+dirCaminhoOutput = str(Path(dirRaiz, dirBase, dirOutput, NomeOutput))
 
 # 
 ########################################################################
 # Lendo e Reduzindo a Imagem
 ########################################################################
 #
-imgBase = cv.imread ( CaminhoImagem + NomeImagem, cv.IMREAD_COLOR)
-imgReduzida = cv.resize(imgBase, (0,0), fx=0.15, fy=0.15, interpolation = cv.INTER_AREA)
+imgBase = cv.imread ( dirCaminhoImagem, cv.IMREAD_COLOR)
 
 # 
 ########################################################################
-# Ajustando o Brilho
+# Checando se a Imagem Foi Lida com Sucesso
 ########################################################################
 #
+if imgBase is None:
+   LimpaTerminal ()
+   print( "Não Foi Localizada a Imagem : ", NomeImagem)
+   exit ()
+
+# 
+########################################################################
+# Aplicando o Efeito
+########################################################################
+#
+imgReduzida = cv.resize(imgBase, (0,0), fx=0.15, fy=0.15, interpolation = cv.INTER_AREA)
 imgSepia = EfeitoSepia ( imgReduzida )
 
 # 
@@ -68,6 +90,13 @@ imgTodasImagens = np.hstack(( imgReduzida, imgSepia))
 cv.imshow ( "Resultado Efeitos", imgTodasImagens)  
 cv.waitKey(0)
 cv.destroyAllWindows()
+
+# 
+########################################################################
+# Armazenando o Resultado
+########################################################################
+#
+cv.imwrite ( dirCaminhoOutput, imgTodasImagens )
 
 ########################################################################
 # FIM DO PROGRAMA
